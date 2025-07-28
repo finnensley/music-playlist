@@ -23,7 +23,7 @@ const titleInput = document.getElementById("title");
 const artistInput = document.getElementById("artist");
 const linkInput = document.getElementById("link");
 const moodDropdown = document.getElementById("mood");
-const form = document.getElementById("songForm");
+const songForm = document.getElementById("songForm");
 const playlistContainer = document.getElementById("playlist");
 const filterDropdown = document.getElementById("filterMood");
 const shuffleBtn = document.getElementById("shuffleBtn");
@@ -198,11 +198,10 @@ function shufflePlaylist() {
 // - Save the theme preference in localStorage (key = "theme")
 // 🧪 Console log to confirm dark mode toggle state
 
-const body = document.body;
 
 function toggleDarkMode() {
-    body.classList.toggle("dark");
-    const theme = body.classList.contains("dark") ? "dark" : "light";
+    document.body.classList.toggle("dark");
+    const theme = document.body.classList.contains("dark") ? "dark" : "light";
     darkModeBtn.innerText = theme === "dark" ? "Light Mode" : "Dark Mode"
     localStorage.setItem("theme", theme);   
   // console.log(theme);
@@ -219,11 +218,10 @@ function toggleDarkMode() {
 function loadTheme() {
   const savedTheme = localStorage.getItem("theme");
   if (savedTheme === "dark") {
-    body.classList.add("dark");
+    document.body.classList.add("dark");
     darkModeBtn.innerText = "Light Mode";
   }
-  console.log(savedTheme);
-  // console.log(theme);
+  // console.log(savedTheme);
 };
 
 
@@ -235,16 +233,9 @@ function loadTheme() {
 // - toggleModeBtn "click" → toggleDarkMode
 // 🧪 Console log to confirm all event listeners were attached
 
-form.addEventListener("submit", addSong); 
-
-filterDropdown.addEventListener("change", () => {
-  filterPlaylist();
-});
-
-shuffleBtn.addEventListener("click", () => {
-  shufflePlaylist();
-});
-
+songForm.addEventListener("submit", addSong); 
+filterDropdown.addEventListener("change", filterPlaylist);
+shuffleBtn.addEventListener("click", shufflePlaylist);
 darkModeBtn.addEventListener("click", toggleDarkMode); 
 
 // console.log ("Event Listeners clicked: ", songForm, filterDropdown, shuffleBtn, toggleModeBtn);
