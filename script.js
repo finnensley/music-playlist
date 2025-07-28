@@ -40,7 +40,7 @@ const darkModeBtn = document.getElementById("toggleModeBtn");
 //  Console log to show that no playlist data was found (if none exists)
 
 function loadPlaylist() {
-    let savedData = JSON.parse(localStorage.getItem("customPlaylist"));
+    let customPlaylist = JSON.parse(localStorage.getItem("customPlaylist"));
     if(Array.isArray(savedData)) {
       playlist.length = 0;
     playlist.push(...savedData);
@@ -141,7 +141,7 @@ function addSong(e) {
     playlist.push(newSong);
     savePlaylist();
     renderPlaylist(playlist);
-    form.reset(); 
+    songForm.reset(); 
 };
    
 //  console.log(playlist);
