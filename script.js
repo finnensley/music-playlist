@@ -4,7 +4,7 @@
 // 🧪 Console log to confirm the playlist is initialized as an empty array
 
 const playlist = [];
-//console.log(playlist);
+console.log(playlist);
 
 //  Step 2: Get references to all the DOM elements (HTML elements we interact with)
 //  Use document.getElementById() to store references to:
@@ -28,7 +28,7 @@ const playlistContainer = document.getElementById("playlist");
 const filterDropdown = document.getElementById("filterMood");
 const shuffleBtn = document.getElementById("shuffleBtn");
 const darkModeBtn = document.getElementById("toggleModeBtn");
-// console.log(titleInput, artistInput, linkInput, moodDropdown, form, playlistContainer, filterDropdown, shuffleBtn, darkModeBtn);
+console.log(titleInput, artistInput, linkInput, moodDropdown, songForm, playlistContainer, filterDropdown, shuffleBtn, darkModeBtn);
 
 // Step 3: Function to load the playlist from localStorage
 //  Define a function called loadPlaylist()
@@ -41,25 +41,22 @@ const darkModeBtn = document.getElementById("toggleModeBtn");
 
 function loadPlaylist() {
     let customPlaylist = JSON.parse(localStorage.getItem("customPlaylist"));
-    if(Array.isArray(savedData)) {
-      playlist.length = 0;
-    playlist.push(...savedData);
-  }
+    playlist.push(...customPlaylist);// error just using customPlaylist, spread operator is adding each song individually, not using it causes a nested array that doesn't work
+    console.log(playlist);
 }
-
-// console.log(playlist);
 
 //  Step 4: Function to save the playlist into localStorage
 //  Define a function called savePlaylist()
 // Inside the function:
-// - Use JSON.stringify() to convert the playlist array to a string
+// - Use JSON.stringify() to convert the playlist array to a string so it can be saved in localStorage
 // - Use localStorage.setItem() to save it with the key "customPlaylist"
 //  Console log to confirm playlist was saved to localStorage
 
 function savePlaylist() {
     localStorage.setItem("customPlaylist", JSON.stringify(playlist));
-    }
-// console.log(playlist);
+  console.log(playlist);   
+  }
+
 
 //  Step 5: Function to render the songs onto the screen
 //  Define a function called renderPlaylist(songsToRender)
@@ -81,18 +78,10 @@ function savePlaylist() {
 // 🔹 4. Append the new div to the playlist container
 // 🧪 Console log to show which songs are being rendered
 
-// 🧹 Then, after the forEach loop:
-// - Use document.querySelectorAll(".delete-btn") to get all delete buttons
-// - Loop through them and add a click event listener to each:
-//    → Get the song index from data-index
-//    → Remove the song from the playlist array using splice()
-//    → Save and re-render the playlist again
-// 🧪 Console log to confirm a song was deleted and show its index
-
 
 function renderPlaylist(songsToRender) {
   playlistContainer.innerHTML = "";
-  songsToRender.forEach((song, index) => {
+  songsToRender.forEach((song, index) => { // got error, forgot to put songsToRender at front of forEach
     const songCard = document.createElement("div");
     songCard.classList.add("song-card");
     songCard.innerHTML = `<strong>${song.title}</strong><br>
@@ -102,15 +91,22 @@ function renderPlaylist(songsToRender) {
   <button class="delete-btn" data-index="${index}">🗑️ Delete</button>`;
     
   playlistContainer.appendChild(songCard);
-  // console.log(songsToRender);
+  console.log(playlist);
 });
 
+// 🧹 Then, after the forEach loop:
+// - Use document.querySelectorAll(".delete-btn") to get all delete buttons
+// - Loop through them and add a click event listener to each:
+//    → Get the song index from data-index
+//    → Remove the song from the playlist array using splice()
+//    → Save and re-render the playlist again
+// 🧪 Console log to confirm a song was deleted and show its index
 
 const deleteBtn = document.querySelectorAll(".delete-btn");
 deleteBtn.forEach(function (deleteBtn) {
   deleteBtn.addEventListener("click", function() {
     //Get the song index from data-index ?
-    const index = parseInt(this.getAttribute("data-index"));
+    const index = parseInt(this.getAttribute("data-index"));// had to look up
     playlist.splice(index, 1);
     savePlaylist();
     renderPlaylist(playlist);
@@ -133,18 +129,18 @@ deleteBtn.forEach(function (deleteBtn) {
 function addSong(e) {
   e.preventDefault();
   const newSong = {
-    title: titleInput.value,
+    title: titleInput.value,// got an error, looked up, and then added .value to each one
     artist: artistInput.value,
     mood: moodDropdown.value,
     link: linkInput.value,
   };
-    playlist.push(newSong);
+    playlist.push(newSong); // kept putting these outside the function and getting error
     savePlaylist();
     renderPlaylist(playlist);
     songForm.reset(); 
+    console.log(playlist);
 };
-   
-//  console.log(playlist);
+
 
 // 🎯 Step 7: Filter playlist by mood
 // 👉 Define a function called filterPlaylist()
@@ -157,15 +153,22 @@ function addSong(e) {
 // 🧪 Console log to show filtered results
 
 function filterPlaylist() {
-  if (filterDropdown.value === "all") {
+  const filtered = [];
+  if (filterDropdown.value === "all") { // forgot to add .value, look back at HTML to confirm "all" in lowercase for value
       renderPlaylist(playlist);
   } else {
-    const filtered = playlist.filter(song => song.mood === filterDropdown.value);
+    for (let i = 0; i < playlist.length; i++) {
+      if (playlist[i].mood === filterDropdown.value) {
+        filtered.push(playlist[i]);
+      }
+    }
+
     renderPlaylist(filtered);
   }
-  // console.log(filterDropdown.value);
+  console.log(filterDropdown.value);
+  console.log(filtered);
 }
-// console.log(playlist);
+
 
 
 // 🔀 Step 8: Shuffle the playlist using Fisher-Yates algorithm
@@ -180,13 +183,13 @@ function filterPlaylist() {
 function shufflePlaylist() {
   for (let i = playlist.length - 1; i > 0; i--) {
     // pick a random index from 0 to i
-    let j = Math.floor(Math.random() * (i + 1));
-        [playlist[i], playlist[j]] = [playlist[j], playlist[i]]
+    let j = Math.floor(Math.random() * (i + 1)); // couldn't remember if this was just let j but I was right. 
+        [playlist[i], playlist[j]] = [playlist[j], playlist[i]] // looked up destructuring
   }
   savePlaylist();
   renderPlaylist(playlist);
+  console.log(playlist);
 }
-// console.log(playlist);
 
 
 // 🌙 Step 9: Toggle between Dark Mode and Light Mode
@@ -204,7 +207,7 @@ function toggleDarkMode() {
     const theme = document.body.classList.contains("dark") ? "dark" : "light";
     darkModeBtn.innerText = theme === "dark" ? "Light Mode" : "Dark Mode"
     localStorage.setItem("theme", theme);   
-  // console.log(theme);
+    console.log(theme);
 };
 
 // 💡 Step 10: Load the saved theme from localStorage
@@ -218,10 +221,10 @@ function toggleDarkMode() {
 function loadTheme() {
   const savedTheme = localStorage.getItem("theme");
   if (savedTheme === "dark") {
-    document.body.classList.add("dark");
+    document.body.classList.add("dark");// forgot to add .classList
     darkModeBtn.innerText = "Light Mode";
   }
-  // console.log(savedTheme);
+  console.log(savedTheme);
 };
 
 
@@ -236,9 +239,9 @@ function loadTheme() {
 songForm.addEventListener("submit", addSong); 
 filterDropdown.addEventListener("change", filterPlaylist);
 shuffleBtn.addEventListener("click", shufflePlaylist);
-darkModeBtn.addEventListener("click", toggleDarkMode); 
+darkModeBtn.addEventListener("click", toggleDarkMode);  //originally wrote these out as ("click", function (){ toggleDarkMode()} for all addEventListeners;
 
-// console.log ("Event Listeners clicked: ", songForm, filterDropdown, shuffleBtn, toggleModeBtn);
+//console.log ("Event Listeners clicked: ", songForm, filterDropdown, shuffleBtn, toggleModeBtn);
 
 // 🚀 Step 12: Initialize the app
 // 👉 Call the following functions:
@@ -249,4 +252,4 @@ darkModeBtn.addEventListener("click", toggleDarkMode);
 loadPlaylist();
 renderPlaylist(playlist);
 loadTheme();
-// console.log(playlist);
+console.log(playlist);//not sure what to pass to confirm initialization
